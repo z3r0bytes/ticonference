@@ -13,16 +13,28 @@ cursor.execute(query)
 for row in cursor.fetchall():
     print row[0]
 cursor.close()
-cnx.close()
 
 
+cursor = cnx.cursor()
+query2 = ("SELECT phoneno FROM asterisk.users")
+cursor.execute(query2)
+
+phonenos = []
 
 tr = telerivet.API("ISukluPKgiudBVk3j63fe7ti8NJT8MVP")
 project = tr.initProjectById("PJ59808a2fd4431a63")
 
-project.sendMessages(
-    content =  row[0], 
-    to_numbers = ["555-1211"],
-    is_template = True
-) 
+count = 0
+for row2 in cursor.fetchall():
+    phonenos.append("\"" + row2[0] + "\"")
+    project.sendMessages(
+     content =  row[0],
+     to_numbers = [phonenos[count]],
+     is_template = True
+    )
+    count+=1
+    print "sent to " + row2[0]
+ 
+cursor.close()
+cnx.close()
 
